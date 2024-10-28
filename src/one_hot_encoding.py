@@ -1,43 +1,31 @@
 import pandas as pd
-
 from sklearn.preprocessing import OneHotEncoder
 
-def onehot_encoder(df, features, handle_unknown='ignore'):
+def one_hot_encode_sklearn(df, features):
     """
-    Performs one-hot encoding for specified categorical features
-
+    Function to apply one-hot encoding using sklearn's OneHotEncoder.
+    
     Parameters:
-    -----------
-    df : DataFrame
-        Input dataset
-    features : list
-        List of categorical features to encode
-    handle_unknown : str
-        Strategy for handling unknown categories in test set
-
+    df (pd.DataFrame): The input DataFrame.
+    features (list): A list of column names in the DataFrame to apply one-hot encoding.
+    
     Returns:
-    --------
-    DataFrame with encoded features, encoder object
+    pd.DataFrame: A DataFrame with the specified features one-hot encoded.
     """
-    # Initialize encoder with updated parameters
-    encoder = OneHotEncoder(sparse_output=False, handle_unknown=handle_unknown)
-
-    # Fit and transform the features
-    encoded_array = encoder.fit_transform(df[features])
-
-    # Get feature names
-    feature_names = []
-    for i, feature in enumerate(features):
-        categories = encoder.categories_[i]
-        for category in categories:
-            feature_names.append(f"{feature}_{category}")
-
-    # Create DataFrame with encoded features
-    encoded_df = pd.DataFrame(
-        encoded_array,
-        columns=feature_names,
-        index=df.index
-    )
-
-    # Return encoded features and the encoder for later use
-    return encoded_df, encoder
+    # Initialize OneHotEncoder
+    ohe = OneHotEncoder(sparse_output=False, drop=None)  # Use drop='first' to drop the first category if needed
+    
+    # Fit and transform only the specified features
+    df_to_encode = df[features]
+    
+    # Perform one-hot encoding and return it as a DataFrame
+    ohe_encoded = ohe.fit_transform(df_to_encode)
+    
+    # Create a DataFrame with encoded feature names
+    encoded_columns = ohe.get_feature_names_out(features)
+    df_encoded = pd.DataFrame(ohe_encoded, columns=encoded_columns, index=df.index)
+    
+    # Drop original features and concatenate the encoded features
+    df_final = pd.concat([df.drop(features, axis=1), df_encoded], axis=1)
+    
+    return df_final

@@ -1,8 +1,7 @@
 
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
 
-from one_hot_encoding import onehot_encoder
+from one_hot_encoding import one_hot_encode_sklearn
 from target_encoding import target_encoder
 
 def quality_mapping(train, test):
@@ -12,6 +11,17 @@ def quality_mapping(train, test):
         'TA': 3,  # Typical/Average
         'Fa': 2,  # Fair
         'Po': 1,   # Poor
+        'NA': 0,   # None
+        'None': 0   # None
+    }
+
+    finished_mapping = {
+        'GLQ': 6,  # Good Living Quarters
+        'ALQ': 5,  # Average Living Quarters
+        'BLQ': 4,  # Below Average Living Quarters
+        'Rec': 3,  # Average Rec Room
+        'LwQ': 2,  # Low Quality
+        'Unf': 1,  # Unfinshed
         'NA': 0,   # None
         'None': 0   # None
     }
@@ -34,8 +44,11 @@ def quality_mapping(train, test):
     test['GarageQual'] = test['GarageQual'].map(quality_mapping)
     train['GarageCond'] = train['GarageCond'].map(quality_mapping)
     test['GarageCond'] = test['GarageCond'].map(quality_mapping)
-    train['PoolQC'] = train['PoolQC'].map(quality_mapping)
-    test['PoolQC'] = test['PoolQC'].map(quality_mapping)
+
+    train['BsmtFinType1'] = train['BsmtFinType1'].map(finished_mapping)
+    test['BsmtFinType1'] = test['BsmtFinType1'].map(finished_mapping)
+    train['BsmtFinType2'] = train['BsmtFinType2'].map(finished_mapping)
+    test['BsmtFinType2'] = test['BsmtFinType2'].map(finished_mapping)
 
     return train, test
 
@@ -76,38 +89,30 @@ def target_encoding(train, test):
     for feature in categorical_features:
         means = train.groupby(feature)['SalePrice'].mean()
         encoded_test[f'{feature}_target_enc'] = test[feature].map(means).fillna(global_mean)
+
+    train = encoded_train
+    test = encoded_test
     
     return train, test
 
 def onehot_encoding(train, test):
     # Features that benefit from one-hot encoding
     onehot_features = [
-        # Binary categories (2 values)
-        'CentralAir',     # Y/N for central air
-        'Street',         # Gravel or Paved
-        'PavedDrive',     # Y/P/N for paved driveway
-
-        # Low-cardinality features (3-5 values)
-        'LotShape',       # Regular, Irregular, etc.
-        'Utilities',      # All public, NoSeWa, etc.
-        'LandContour',    # Level, Low, etc.
-        'BsmtExposure',   # None, Partial, etc.
-        'Electrical',     # SBrkr, FuseA, etc.
-        'Heating',        # GasA, GasW, etc.
+        'CentralAir',    # Y/N for central air
+        'PavedDrive',    # Y/P/N for paved driveway
+        'LotShape',      # Regular, Irregular, etc.
+        'LotConfig',     # Inside, Corner, etc.
+        'Utilities',     # All public, NoSeWa, etc.
+        'LandContour',   # Level, Low, etc.
+        'BsmtExposure',  # None, Partial, etc.
+        'Electrical',    # SBrkr, FuseA, etc.
+        'Heating'        # GasA, GasW, etc.
     ]
 
-    # Apply one-hot encoding to training data
-    encoded_train, encoder = onehot_encoder(
-        train,
-        features=onehot_features
-    )
-
-    # Apply same encoding to test data
-    encoded_test = pd.DataFrame(
-        encoder.transform(test[onehot_features]),
-        columns=encoder.get_feature_names_out(onehot_features),
-        index=test.index
-    )
+    encoded_train = one_hot_encode_sklearn(train, onehot_features)
+    encoded_test = one_hot_encode_sklearn(test, onehot_features)
+    train = encoded_train
+    test = encoded_test
 
     # Function to handle missing values in categorical features
     def handle_missing_categories(df, features):
@@ -123,7 +128,7 @@ def onehot_encoding(train, test):
 
 def encode_features(train, test):
     # Apply quality mapping
-    trian, test = quality_mapping(train, test)
+    train, test = quality_mapping(train, test)
 
     # Apply target encoding
     train, test = target_encoding(train, test)
