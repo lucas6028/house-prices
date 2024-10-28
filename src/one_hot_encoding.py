@@ -17,8 +17,9 @@ def one_hot_encode_sklearn(df, features):
     pd.DataFrame: A DataFrame with the specified features one-hot encoded.
     """
     # Initialize OneHotEncoder
-    ohe = OneHotEncoder(sparse_output=False, drop=None)  # Use drop='first' to drop the first category if needed
-    
+    # Use drop='first' to drop the first category if needed
+    ohe = OneHotEncoder(sparse_output=False, drop=None)
+
     # Fit and transform only the specified features
     df_to_encode = df[features]
     

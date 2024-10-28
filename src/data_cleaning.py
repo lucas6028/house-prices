@@ -16,11 +16,6 @@ def clean_data(df):
     Returns:
         pd.DataFrame: The cleaned DataFrame.
     """
-    # Missing values per column
-    missing = df.isnull().sum().sort_values(ascending=False)
-    missing_percent = (missing / len(df)) * 100
-    missing_data = pd.DataFrame({'Missing Values': missing, 'Percentage': missing_percent})
-
     # Create a copy to avoid SettingWithCopyWarning
     df = df.copy()
 
@@ -69,8 +64,6 @@ def clean_data(df):
     df['Exterior2nd'] = df['Exterior2nd'].fillna(df['Exterior2nd'].mode()[0])
     df['Exterior1st'] = df['Exterior1st'].fillna(df['Exterior1st'].mode()[0])
 
-    # Find duplicate rows
-    duplicates = df.duplicated()
     # Remove duplicates
     df = df.drop_duplicates()
 
