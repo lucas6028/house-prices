@@ -16,7 +16,9 @@ def clean_data(df):
 
     df['MasVnrType'] = df['MasVnrType'].fillna(df['MasVnrType'].mode()[0])
     df['FireplaceQu'] = df['FireplaceQu'].fillna(df['FireplaceQu'].mode()[0])
-    df['LotFrontage'] = df.groupby('Neighborhood')['LotFrontage'].transform(lambda x: x.fillna(x.median()))
+    df['LotFrontage'] = df.groupby('Neighborhood')['LotFrontage'].transform(
+        lambda x: x.fillna(x.median())
+    )
     df['SaleType'] = df['SaleType'].fillna('Oth')
 
     garage_cols = ['GarageCond', 'GarageType', 'GarageFinish', 'GarageQual']
@@ -25,8 +27,21 @@ def clean_data(df):
     df[garage_num_cols] = df[garage_num_cols].fillna(0)
     df['GarageYrBlt'] = df['GarageYrBlt'].fillna(1801)
 
-    bsmt_cols = ['BsmtFinType2', 'BsmtExposure', 'BsmtQual', 'BsmtCond', 'BsmtFinType1']
-    bmst_num_cols = ['BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'BsmtFullBath', 'BsmtHalfBath']
+    bsmt_cols = [
+        'BsmtFinType2', 
+        'BsmtExposure', 
+        'BsmtQual', 
+        'BsmtCond', 
+        'BsmtFinType1'
+    ]
+    bmst_num_cols = [
+        'BsmtFinSF1', 
+        'BsmtFinSF2',
+        'BsmtUnfSF',
+        'TotalBsmtSF', 
+        'BsmtFullBath', 
+        'BsmtHalfBath'
+    ]
     df[bsmt_cols] = df[bsmt_cols].fillna('None')
     df[bmst_num_cols] = df[bmst_num_cols].fillna(0)
 
