@@ -1,6 +1,3 @@
-
-import pandas as pd
-
 from one_hot_encoding import one_hot_encode_sklearn
 from target_encoding import target_encoder
 
