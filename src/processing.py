@@ -18,5 +18,5 @@ test = clean_data(test)
 train, test = encode_features(train, test)
 
 # Save processed data
-train.to_csv('train_processed.csv', index=False)
-test.to_csv('test_processed.csv', index=False)
+train.to_csv('data/train_processed.csv', index=False)
+test.to_csv('data/test_processed.csv', index=False)
