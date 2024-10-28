@@ -1,7 +1,21 @@
+"""
+Module for cleaning data.
+"""
+
 import pandas as pd
 import numpy as np
 
 def clean_data(df):
+    """
+    Cleans the input DataFrame by handling missing values, converting data types,
+    removing duplicates, and removing outliers.
+    
+    Args:
+        df (pd.DataFrame): The input DataFrame to be cleaned.
+    
+    Returns:
+        pd.DataFrame: The cleaned DataFrame.
+    """
     # Missing values per column
     missing = df.isnull().sum().sort_values(ascending=False)
     missing_percent = (missing / len(df)) * 100
@@ -34,7 +48,7 @@ def clean_data(df):
         'BsmtCond', 
         'BsmtFinType1'
     ]
-    bmst_num_cols = [
+    bsmt_num_cols = [
         'BsmtFinSF1', 
         'BsmtFinSF2',
         'BsmtUnfSF',
@@ -43,7 +57,7 @@ def clean_data(df):
         'BsmtHalfBath'
     ]
     df[bsmt_cols] = df[bsmt_cols].fillna('None')
-    df[bmst_num_cols] = df[bmst_num_cols].fillna(0)
+    df[bsmt_num_cols] = df[bsmt_num_cols].fillna(0)
 
     df['MasVnrArea'] = df['MasVnrArea'].fillna(0)
     df['Electrical'] = df['Electrical'].fillna(df['Electrical'].mode()[0])
@@ -80,10 +94,9 @@ def clean_data(df):
 
     df['MSSubClass'] = df['MSSubClass'].astype(str)
 
-
     # Remove outliers
     if 'SalePrice' in df.columns:
-        df['SalePrice_log'] = np.log(df['SalePrice']) # Log transformation
+        df['SalePrice_log'] = np.log(df['SalePrice'])  # Log transformation
 
     df = df[df['LotFrontage'] < 300]
     df = df[df['LotArea'] < 100000]
