@@ -86,6 +86,9 @@ def clean_data(df):
     assert df.isnull().sum().sum() == 0
 
     # Save cleaned data
-    df.to_csv('data/train_cleaned.csv', index=False)
+    if 'SalePrice_log' in df.columns:
+        df.to_csv('data/train_cleaned.csv', index=False)
+    else:
+        df.to_csv('data/test_cleaned.csv', index=False)
 
     return df
