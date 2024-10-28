@@ -1,3 +1,7 @@
+"""
+Module for one-hot encoding using sklearn's OneHotEncoder.
+"""
+
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
