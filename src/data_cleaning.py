@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from scipy.stats import zscore
 
 def clean_data(df):
     # Missing values per column
