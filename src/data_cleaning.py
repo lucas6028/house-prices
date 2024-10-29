@@ -26,6 +26,31 @@ def clean_data(df):
     return df
 
 def fill_missing_values(df):
+    """
+    Fill missing values in the DataFrame with appropriate values.
+
+    Parameters:
+    df (pandas.DataFrame): The input DataFrame with missing values.
+
+    Returns:
+    pandas.DataFrame: The DataFrame with missing values filled.
+
+    The function performs the following operations:
+    - Drops columns that are not needed: 'PoolQC', 'MiscFeature', 'Alley', 'Fence'.
+    - Fills missing values in 'MasVnrType' and 'FireplaceQu' with their respective mode.
+    - Fills missing values in 'LotFrontage' with the median value grouped by 'Neighborhood'.
+    - Fills missing values in 'SaleType' with 'Oth'.
+    - Fills missing values in garage-related columns with 'None' for categorical and 0 for numerical columns.
+    - Fills missing values in 'GarageYrBlt' with 1801.
+    - Fills missing values in basement-related columns with 'None' for categorical and 0 for numerical columns.
+    - Fills missing values in 'MasVnrArea' with 0.
+    - Fills missing values in 'Electrical' with its mode.
+    - Fills missing values in 'MSZoning' with its mode.
+    - Fills missing values in 'Functional' with its mode.
+    - Fills missing values in 'Utilities' with its mode.
+    - Fills missing values in 'KitchenQual' with its mode.
+    - Fills missing values in 'Exterior2nd' and 'Exterior1st' with their respective mode.
+    """
     none_fill_columns = ['PoolQC', 'MiscFeature', 'Alley', 'Fence']
     df = df.drop(columns=none_fill_columns)
     df['MasVnrType'] = df['MasVnrType'].fillna(df['MasVnrType'].mode()[0])
@@ -68,6 +93,38 @@ def fill_missing_values(df):
     return df
 
 def convert_data_types(df):
+    """
+    Convert data types of specific columns in the DataFrame.
+
+    This function converts the data types of various columns in the input DataFrame to appropriate types.
+    Numeric columns are converted to numeric types, date columns are converted to datetime, and some columns
+    are converted to string types.
+
+    Parameters:
+    df (pandas.DataFrame): The input DataFrame containing the data to be converted.
+
+    Returns:
+    pandas.DataFrame: The DataFrame with converted data types.
+
+    Columns converted:
+    - 'LotFrontage': to numeric
+    - 'MasVnrArea': to numeric
+    - 'BsmtFinSF1': to numeric
+    - 'BsmtFinSF2': to numeric
+    - 'BsmtUnfSF': to numeric
+    - 'TotalBsmtSF': to numeric
+    - 'BsmtFullBath': to numeric
+    - 'BsmtHalfBath': to numeric
+    - 'GarageCars': to numeric
+    - 'GarageArea': to numeric
+    - 'OverallQual': to numeric
+    - 'OverallCond': to numeric
+    - 'YearBuilt': to datetime (format: '%Y')
+    - 'YearRemodAdd': to datetime (format: '%Y')
+    - 'GarageYrBlt': to datetime (format: '%Y')
+    - 'YrSold': to datetime (format: '%Y')
+    - 'MSSubClass': to string
+    """
     df['LotFrontage'] = pd.to_numeric(df['LotFrontage'], errors='coerce')
     df['MasVnrArea'] = pd.to_numeric(df['MasVnrArea'], errors='coerce')
     df['BsmtFinSF1'] = pd.to_numeric(df['BsmtFinSF1'], errors='coerce')
@@ -106,6 +163,19 @@ def remove_outliers(df):
     return df
 
 def save_cleaned_data(df):
+    """
+    Save the cleaned DataFrame to a CSV file.
+
+    This function checks if the 'SalePrice_log' column exists in the DataFrame.
+    If it does, the DataFrame is saved to 'data/train_cleaned.csv'.
+    Otherwise, it is saved to 'data/test_cleaned.csv'.
+
+    Parameters:
+    df (pandas.DataFrame): The DataFrame to be saved.
+
+    Returns:
+    None
+    """
     if 'SalePrice_log' in df.columns:
         df.to_csv('data/train_cleaned.csv', index=False)
     else:
