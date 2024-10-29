@@ -22,4 +22,5 @@ jobs:
         from sklearn.model_selectoin import KFold
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        # Run pylint on all Python files in your repository
+        python -m pylint $(git ls-files '*.py')
