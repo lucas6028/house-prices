@@ -16,26 +16,29 @@ def clean_data(df):
     Returns:
         pd.DataFrame: The cleaned DataFrame.
     """
-    # Create a copy to avoid SettingWithCopyWarning
     df = df.copy()
+    df = fill_missing_values(df)
+    df = convert_data_types(df)
+    df = remove_duplicates(df)
+    df = remove_outliers(df)
+    assert df.isnull().sum().sum() == 0
+    save_cleaned_data(df)
+    return df
 
-    # Fill missing values
+def fill_missing_values(df):
     none_fill_columns = ['PoolQC', 'MiscFeature', 'Alley', 'Fence']
     df = df.drop(columns=none_fill_columns)
-
     df['MasVnrType'] = df['MasVnrType'].fillna(df['MasVnrType'].mode()[0])
     df['FireplaceQu'] = df['FireplaceQu'].fillna(df['FireplaceQu'].mode()[0])
     df['LotFrontage'] = df.groupby('Neighborhood')['LotFrontage'].transform(
         lambda x: x.fillna(x.median())
     )
     df['SaleType'] = df['SaleType'].fillna('Oth')
-
     garage_cols = ['GarageCond', 'GarageType', 'GarageFinish', 'GarageQual']
     garage_num_cols = ['GarageCars', 'GarageArea']
     df[garage_cols] = df[garage_cols].fillna('None')
     df[garage_num_cols] = df[garage_num_cols].fillna(0)
     df['GarageYrBlt'] = df['GarageYrBlt'].fillna(1801)
-
     bsmt_cols = [
         'BsmtFinType2', 
         'BsmtExposure', 
@@ -53,7 +56,6 @@ def clean_data(df):
     ]
     df[bsmt_cols] = df[bsmt_cols].fillna('None')
     df[bsmt_num_cols] = df[bsmt_num_cols].fillna(0)
-
     df['MasVnrArea'] = df['MasVnrArea'].fillna(0)
     df['Electrical'] = df['Electrical'].fillna(df['Electrical'].mode()[0])
     df['SaleType'] = df['SaleType'].fillna('Oth')
@@ -63,10 +65,9 @@ def clean_data(df):
     df['KitchenQual'] = df['KitchenQual'].fillna(df['KitchenQual'].mode()[0])
     df['Exterior2nd'] = df['Exterior2nd'].fillna(df['Exterior2nd'].mode()[0])
     df['Exterior1st'] = df['Exterior1st'].fillna(df['Exterior1st'].mode()[0])
+    return df
 
-    # Remove duplicates
-    df = df.drop_duplicates()
-
+def convert_data_types(df):
     df['LotFrontage'] = pd.to_numeric(df['LotFrontage'], errors='coerce')
     df['MasVnrArea'] = pd.to_numeric(df['MasVnrArea'], errors='coerce')
     df['BsmtFinSF1'] = pd.to_numeric(df['BsmtFinSF1'], errors='coerce')
@@ -79,18 +80,19 @@ def clean_data(df):
     df['GarageArea'] = pd.to_numeric(df['GarageArea'], errors='coerce')
     df['OverallQual'] = pd.to_numeric(df['OverallQual'], errors='coerce')
     df['OverallCond'] = pd.to_numeric(df['OverallCond'], errors='coerce')
-
     df['YearBuilt'] = pd.to_datetime(df['YearBuilt'], format='%Y', errors='coerce')
     df['YearRemodAdd'] = pd.to_datetime(df['YearRemodAdd'], format='%Y', errors='coerce')
     df['GarageYrBlt'] = pd.to_datetime(df['GarageYrBlt'], format='%Y', errors='coerce')
     df['YrSold'] = pd.to_datetime(df['YrSold'], format='%Y', errors='coerce')
-
     df['MSSubClass'] = df['MSSubClass'].astype(str)
+    return df
 
-    # Remove outliers
+def remove_duplicates(df):
+    return df.drop_duplicates()
+
+def remove_outliers(df):
     if 'SalePrice' in df.columns:
         df['SalePrice_log'] = np.log(df['SalePrice'])  # Log transformation
-
     df = df[df['LotFrontage'] < 300]
     df = df[df['LotArea'] < 100000]
     df = df[df['TotalBsmtSF'] < 3000]
@@ -101,14 +103,10 @@ def clean_data(df):
     df = df[df['WoodDeckSF'] < 600]
     df = df[df['OpenPorchSF'] < 300]
     df = df[df['MiscVal'] < 5000]
+    return df
 
-    # Final consistency and missing checking
-    assert df.isnull().sum().sum() == 0
-
-    # Save cleaned data
+def save_cleaned_data(df):
     if 'SalePrice_log' in df.columns:
         df.to_csv('data/train_cleaned.csv', index=False)
     else:
         df.to_csv('data/test_cleaned.csv', index=False)
-
-    return df
