@@ -43,9 +43,11 @@ def quality_mapping(train, test):
         'None': 0  # None
     }
 
-    for feature in ['ExterQual', 'ExterCond', 'BsmtQual', 'BsmtCond', 
-                    'HeatingQC', 'KitchenQual', 'FireplaceQu', 
-                    'GarageQual', 'GarageCond']:
+    for feature in [
+        'ExterQual', 'ExterCond', 'BsmtQual', 'BsmtCond', 
+        'HeatingQC', 'KitchenQual', 'FireplaceQu', 
+        'GarageQual', 'GarageCond'
+        ]:
         train[feature] = train[feature].map(condition_mapping)
         test[feature] = test[feature].map(condition_mapping)
 
