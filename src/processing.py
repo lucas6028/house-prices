@@ -6,7 +6,8 @@ Functions:
     - clean_data: Cleans the dataset by handling missing values, outliers, etc.
     - encode_features: Encodes categorical features into numerical values.
 Usage:
-    The script reads the training and test datasets, applies preprocessing steps, and saves the processed data to CSV files.
+    The script reads the training and test datasets, applies preprocessing steps, 
+    and saves the processed data to CSV files.
 """
 import pandas as pd
 from data_cleaning import clean_data

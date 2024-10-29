@@ -1,3 +1,13 @@
+"""
+Module: encoding
+This module provides functions for encoding categorical features in a dataset.
+It includes quality mapping, target encoding, and one-hot encoding.
+Functions:
+    quality_mapping(train, test):
+    target_encoding(train, test):
+    onehot_encoding(train, test):
+    encode_features(train, test):
+"""
 from one_hot_encoding import one_hot_encode_sklearn
 from target_encoding import target_encoder
 
@@ -12,7 +22,7 @@ def quality_mapping(train, test):
     Returns:
         pd.DataFrame, pd.DataFrame: Transformed training and testing datasets.
     """
-    quality_mapping = {
+    condition_mapping = {
         'Ex': 5,  # Excellent
         'Gd': 4,  # Good
         'TA': 3,  # Typical/Average
@@ -36,8 +46,8 @@ def quality_mapping(train, test):
     for feature in ['ExterQual', 'ExterCond', 'BsmtQual', 'BsmtCond', 
                     'HeatingQC', 'KitchenQual', 'FireplaceQu', 
                     'GarageQual', 'GarageCond']:
-        train[feature] = train[feature].map(quality_mapping)
-        test[feature] = test[feature].map(quality_mapping)
+        train[feature] = train[feature].map(condition_mapping)
+        test[feature] = test[feature].map(condition_mapping)
 
     for feature in ['BsmtFinType1', 'BsmtFinType2']:
         train[feature] = train[feature].map(finished_mapping)
