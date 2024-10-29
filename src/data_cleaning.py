@@ -40,9 +40,11 @@ def fill_missing_values(df):
     - Fills missing values in 'MasVnrType' and 'FireplaceQu' with their respective mode.
     - Fills missing values in 'LotFrontage' with the median value grouped by 'Neighborhood'.
     - Fills missing values in 'SaleType' with 'Oth'.
-    - Fills missing values in garage-related columns with 'None' for categorical and 0 for numerical columns.
+    - Fills missing values in garage-related columns 
+        with 'None' for categorical and 0 for numerical columns.
     - Fills missing values in 'GarageYrBlt' with 1801.
-    - Fills missing values in basement-related columns with 'None' for categorical and 0 for numerical columns.
+    - Fills missing values in basement-related columns 
+        with 'None' for categorical and 0 for numerical columns.
     - Fills missing values in 'MasVnrArea' with 0.
     - Fills missing values in 'Electrical' with its mode.
     - Fills missing values in 'MSZoning' with its mode.
@@ -97,7 +99,8 @@ def convert_data_types(df):
     Convert data types of specific columns in the DataFrame.
 
     This function converts the data types of various columns in the input DataFrame to appropriate types.
-    Numeric columns are converted to numeric types, date columns are converted to datetime, and some columns
+    Numeric columns are converted to numeric types, 
+    date columns are converted to datetime, and some columns
     are converted to string types.
 
     Parameters:
@@ -145,9 +148,40 @@ def convert_data_types(df):
     return df
 
 def remove_duplicates(df):
+    """
+    Remove duplicate rows from a DataFrame.
+
+    Parameters:
+    df (pandas.DataFrame): The DataFrame from which to remove duplicate rows.
+
+    Returns:
+    pandas.DataFrame: A DataFrame with duplicate rows removed.
+    """
     return df.drop_duplicates()
 
 def remove_outliers(df):
+    """
+    Remove outliers from the DataFrame based on predefined thresholds for various columns.
+
+    This function performs the following operations:
+    - Applies a log transformation to the 'SalePrice' column if it exists.
+    - Removes rows where 'LotFrontage' is 300 or more.
+    - Removes rows where 'LotArea' is 100,000 or more.
+    - Removes rows where 'TotalBsmtSF' is 3,000 or more.
+    - Removes rows where '1stFlrSF' is 3,000 or more.
+    - Removes rows where '2ndFlrSF' is 1,500 or more.
+    - Removes rows where 'GrLivArea' is 4,000 or more.
+    - Removes rows where 'GarageArea' is 1,200 or more.
+    - Removes rows where 'WoodDeckSF' is 600 or more.
+    - Removes rows where 'OpenPorchSF' is 300 or more.
+    - Removes rows where 'MiscVal' is 5,000 or more.
+
+    Parameters:
+    df (pandas.DataFrame): The input DataFrame containing house price data.
+
+    Returns:
+    pandas.DataFrame: The DataFrame with outliers removed.
+    """
     if 'SalePrice' in df.columns:
         df['SalePrice_log'] = np.log(df['SalePrice'])  # Log transformation
     df = df[df['LotFrontage'] < 300]
