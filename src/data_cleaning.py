@@ -98,7 +98,8 @@ def convert_data_types(df):
     """
     Convert data types of specific columns in the DataFrame.
 
-    This function converts the data types of various columns in the input DataFrame to appropriate types.
+    This function converts the data types of various columns 
+    in the input DataFrame to appropriate types.
     Numeric columns are converted to numeric types, 
     date columns are converted to datetime, and some columns
     are converted to string types.
