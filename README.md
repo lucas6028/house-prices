@@ -78,7 +78,3 @@ Save the cleaned and processed data to CSV files for further analysis and modeli
 ## Usage
 
 To run the preprocessing steps, open and execute the cells in the [HousePrices.ipynb](HousePrices.ipynb) notebook.
-
-## License
-
-This project is licensed under the MIT License.
